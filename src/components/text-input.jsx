@@ -19,7 +19,7 @@ export function TextInput({value: propValue, setValue: propSetValue, type}) {
   return (
     <Box
       component="form"
-      sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
+      sx={{ '& > :not(style)': { m: 1, width: 'auto' } }}
       noValidate
       autoComplete="off"
     >
