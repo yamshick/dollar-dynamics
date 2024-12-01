@@ -5,6 +5,7 @@ import { numberWithSpaces } from "./helpers/number-value-mask";
 import { Header } from "./header/header";
 import { NET_WORTH_RUBBLE } from "./constants";
 import { WidgetGrid } from "./widget-grid/widget-grid";
+import { DynamicsChart } from "./dynamics-chart/dynamics-chart";
 
 const yaUrl = 'https://ya.ru'
 const raUrl = 'https://www.rambler.ru/'
@@ -137,6 +138,7 @@ export const App = () => {
       onAddWidgetButtonClick={onAddWidgetButtonClick}
       />
       <WidgetGrid gridWidgets={gridWidgets} onDeleteWidgetButtonClick={onDeleteWidgetButtonClick} onUpdateWidget={onUpdateWidget}/>
+      <DynamicsChart />
     </>
   );
 };
