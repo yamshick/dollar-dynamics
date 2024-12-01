@@ -10,6 +10,11 @@ module.exports = merge(common, {
   devServer: {
     port: 3000,
     static: path.join(__dirname, "src"),
+    headers: { 
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+    }
   },
   devtool: "inline-source-map",
 });
