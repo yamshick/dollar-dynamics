@@ -1,0 +1,2 @@
+export const NET_WORTH_RUBBLE = 1775000
+export const MONTHLY_INCOME = 304500

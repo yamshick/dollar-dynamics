@@ -1,0 +1,26 @@
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px;
+    border-radius: 5px;
+}
+
+.closeButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.widgetItem {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}

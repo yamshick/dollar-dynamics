@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import "./app.css";
+import { TextInput } from "./components/text-input";
+import { numberWithSpaces } from "./helpers/number-value-mask";
+import { Header } from "./header/header";
+import { NET_WORTH_RUBBLE } from "./constants";
+import { WidgetGrid } from "./widget-grid/widget-grid";
 
 const yaUrl = 'https://ya.ru'
 const raUrl = 'https://www.rambler.ru/'
@@ -7,7 +12,6 @@ const currenciesURL = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@la
 
 // const cbUrl = 'https://www.cbr.ru/currency_base/daily/'
 const cbUrl = 'https://www.cbr-xml-daily.ru/daily_json.js'
-
 
 const useFetchCbCur = async () => {
   const [cur, setCur] = useState(0)
@@ -19,7 +23,6 @@ const useFetchCbCur = async () => {
       throw new Erorr('CB CUR RESPONSE IN ERROR')
     }
     const text = response.text()
-    console.log({text})
   } catch(e) {
     setError(e)
   }
@@ -31,9 +34,12 @@ export const App = () => {
 
   // const {cbCur, cbCurError} = useFetchCbCur()
 
-
+  const [netWorthRubble, setNetWorthRubble] = useState(NET_WORTH_RUBBLE)
+  const [netWorthDollar, setNetWorthDollar] = useState(0)
   const [dollarToRub, setDollarToRub] = useState('')
+  const [prevDollarToRub, setPrevDollarToRub] = useState(0)
 
+  const [gridWidgets, setGridWidgets] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,15 +52,15 @@ export const App = () => {
         //     'Access-Control-Allow-Origin':'*'
         //   }}
       )
-      console.warn(response)
 
       if (!response.ok) {
         throw new Error('CB CUR RESPONSE IN ERROR')
       }
       const text = await response.json()
-      console.log({text})
       const dollar = text.Valute.USD.Value
+      const prDollar = text.Valute.USD.Previous
       setDollarToRub(dollar)
+      setPrevDollarToRub(prDollar)
     } catch(e) {
       console.error(e)
     }
@@ -95,5 +101,42 @@ export const App = () => {
   //   fetchDollarCurrency()
   // }, [])
 
-  return <h1>{dollarToRub}</h1>;
+  useEffect(() => {
+    setNetWorthDollar(Math.round(netWorthRubble / dollarToRub))
+  }, [netWorthRubble, dollarToRub])
+
+  const onAddWidgetButtonClick = () => {
+    const newWidget = {
+      id: Date.now(),
+      rubblesAmount: netWorthRubble,
+      dollarToRub,
+      prevDollarToRub,
+      dollarToRubCustom: dollarToRub
+    }
+
+    setGridWidgets([...gridWidgets, newWidget])
+  }
+
+  const onDeleteWidgetButtonClick = (widgetId) => {
+    setGridWidgets(gridWidgets.filter(({id}) => id !== widgetId))
+  }
+
+  const onUpdateWidget = (newWidget) => {
+    setGridWidgets(gridWidgets.map(gridWidget => {
+      if (gridWidget.id === newWidget.id) {
+        return newWidget
+      }
+
+      else return gridWidget
+    }))
+  }
+
+  return (
+    <>
+      <Header dollarToRub={dollarToRub} prevDollarToRub={prevDollarToRub} netWorthDollar={netWorthDollar} netWorthRubble={netWorthRubble} setNetWorthRubble={setNetWorthRubble}
+      onAddWidgetButtonClick={onAddWidgetButtonClick}
+      />
+      <WidgetGrid gridWidgets={gridWidgets} onDeleteWidgetButtonClick={onDeleteWidgetButtonClick} onUpdateWidget={onUpdateWidget}/>
+    </>
+  );
 };
