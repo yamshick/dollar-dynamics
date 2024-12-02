@@ -36,8 +36,11 @@ export const App = () => {
   // const {cbCur, cbCurError} = useFetchCbCur()
 
   const [netWorthRubble, setNetWorthRubble] = useState(NET_WORTH_RUBBLE)
+  const [netWorthEuro, setNetWorthEuro] = useState(0)
   const [netWorthDollar, setNetWorthDollar] = useState(0)
-  const [dollarToRub, setDollarToRub] = useState('')
+  const [euroToRub, setEuroToRub] = useState(0)
+  const [prevEuroToRub, setPrevEuroToRub] = useState(0)
+  const [dollarToRub, setDollarToRub] = useState(0)
   const [prevDollarToRub, setPrevDollarToRub] = useState(0)
 
   const [gridWidgets, setGridWidgets] = useState([])
@@ -60,12 +63,17 @@ export const App = () => {
       const text = await response.json()
       const dollar = text.Valute.USD.Value
       const prDollar = text.Valute.USD.Previous
+      const euro = text.Valute.EUR.Value
+      const prEuro = text.Valute.EUR.Previous
       setDollarToRub(dollar)
       setPrevDollarToRub(prDollar)
+      setEuroToRub(euro)
+      setPrevEuroToRub(prEuro)
     } catch(e) {
       console.error(e)
     }
   }
+    console.warn('fetching data')
    fetchData()
   }, [])
 
@@ -104,7 +112,27 @@ export const App = () => {
 
   useEffect(() => {
     setNetWorthDollar(Math.round(netWorthRubble / dollarToRub))
-  }, [netWorthRubble, dollarToRub])
+    setNetWorthEuro(Math.round(netWorthRubble / euroToRub))
+  }, [netWorthRubble, dollarToRub, euroToRub])
+
+  useEffect(() => {
+    setGridWidgets([{
+      id: 1,
+      rubblesAmount: Number(netWorthRubble),
+      dollarToRub,
+      prevDollarToRub,
+      euroToRub,
+      prevEuroToRub,
+      dollarToRubCustom: dollarToRub,
+      euroToRubCustom: euroToRub
+    }])
+  }, [
+    netWorthRubble, 
+    dollarToRub,
+    prevDollarToRub,
+    euroToRub,
+    prevEuroToRub,
+  ])
 
   const onAddWidgetButtonClick = () => {
     const newWidget = {
@@ -112,7 +140,10 @@ export const App = () => {
       rubblesAmount: netWorthRubble,
       dollarToRub,
       prevDollarToRub,
-      dollarToRubCustom: dollarToRub
+      euroToRub,
+      prevEuroToRub,
+      dollarToRubCustom: dollarToRub,
+      euroToRubCustom: euroToRub
     }
 
     setGridWidgets([...gridWidgets, newWidget])
@@ -134,8 +165,16 @@ export const App = () => {
 
   return (
     <>
-      <Header dollarToRub={dollarToRub} prevDollarToRub={prevDollarToRub} netWorthDollar={netWorthDollar} netWorthRubble={netWorthRubble} setNetWorthRubble={setNetWorthRubble}
-      onAddWidgetButtonClick={onAddWidgetButtonClick}
+      <Header 
+        dollarToRub={dollarToRub} 
+        prevDollarToRub={prevDollarToRub} 
+        euroToRub={euroToRub}
+        prevEuroToRub={prevEuroToRub}
+        netWorthDollar={netWorthDollar} 
+        netWorthEuro={netWorthEuro}
+        netWorthRubble={netWorthRubble} 
+        setNetWorthRubble={setNetWorthRubble}
+        onAddWidgetButtonClick={onAddWidgetButtonClick}
       />
       <WidgetGrid gridWidgets={gridWidgets} onDeleteWidgetButtonClick={onDeleteWidgetButtonClick} onUpdateWidget={onUpdateWidget}/>
       <DynamicsChart />
