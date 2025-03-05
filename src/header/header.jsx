@@ -66,7 +66,7 @@ export const Header = ({
                     &euro;
                     {' '}
                     {Number(prevEuroToRub).toFixed(2)} &rarr; {Number(euroToRub).toFixed(2)}
-                    {dollarDelta > 0 ? <span style={{color: 'red'}}>
+                    {euroDelta > 0 ? <span style={{color: 'red'}}>
                         &uarr; {Number(euroDelta).toFixed(2)}
                     </span> : <span style={{color: 'green'}}>
                         &darr; {Number(euroDelta).toFixed(2)}
